@@ -20,3 +20,15 @@ typealias DiscreteMultivariateSampler   Sampler{Multivariate,  Discrete}
 typealias ContinuousMultivariateSampler Sampler{Multivariate,  Continuous}
 typealias DiscreteMatrixSampler         Sampler{Matrixvariate, Discrete}
 typealias ContinuousMatrixSampler       Sampler{Matrixvariate, Continuous}
+
+## generic batch rand methods
+
+function rand!(s::UnivariateSampler, A::AbstractArray)
+    for i in 1:length(A)
+        @inbounds A[i] = rand(s)
+    end
+    return A
+end
+
+rand(s::DiscreteUnivariateSampler, shp::Union(Int,(Int...))) = rand!(s, Array(Int, shp))
+rand(s::ContinuousUnivariateSampler, shp::Union(Int, (Int...))) = rand!(s, Array(Float64, shp))
