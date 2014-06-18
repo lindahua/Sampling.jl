@@ -1,7 +1,7 @@
 
 randexp() = Base.Random.randmtzig_exprnd()
 
-immutable ExponentialSampler <: ContinuousUnivariateSampler
+immutable ExponentialSampler <: Sampleable{Univariate,Continuous}
 	scale::Float64
 end
 

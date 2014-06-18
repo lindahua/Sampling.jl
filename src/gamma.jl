@@ -5,7 +5,7 @@
 #  basic simulation loop for pre-computed d and c
 #
 
-immutable GammaMTSampler <: ContinuousUnivariateSampler
+immutable GammaMTSampler <: Sampleable{Univariate,Continuous}
     iα::Float64
     d::Float64
     c::Float64

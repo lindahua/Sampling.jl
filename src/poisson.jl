@@ -13,7 +13,7 @@ end
 #
 # Suitable for small μ
 #
-immutable PoissonCountSampler <: DiscreteUnivariateSampler
+immutable PoissonCountSampler <: Sampleable{Univariate,Discrete}
     μ::Float64
 end
 
@@ -36,7 +36,7 @@ end
 #   
 #   For μ sufficiently large, (i.e. >= 10.0)
 #
-immutable PoissonADSampler <: DiscreteUnivariateSampler
+immutable PoissonADSampler <: Sampleable{Univariate,Discrete}
     μ::Float64
     s::Float64
     d::Float64
