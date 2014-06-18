@@ -59,7 +59,7 @@ function AliasTable{T<:Real}(probs::AbstractVector{T})
 end
 
 rand(s::AliasTable) = 
-    (i = rand(s.isampler); u = rand(); @inbounds u < s.accept[i] ? i : s.alias[i])
+    (i = rand(s.isampler); u = rand(); @inbounds r = u < s.accept[i] ? i : s.alias[i]; r)
 
 show(io::IO, s::AliasTable) = @printf(io, "AliasTable with %d entries", numcategories(s))
 
