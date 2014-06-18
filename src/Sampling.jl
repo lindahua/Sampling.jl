@@ -21,12 +21,17 @@ module Sampling
 
     # binomial
     BinomialGeomSampler, BinomialTPESampler, BinomialPolySampler,
-    BinomialAliasSampler
+    BinomialAliasSampler,
+
+    # exponential
+    ExponentialSampler, randexp
+
 
     # source files
     include("samplebase.jl")
     include("randi.jl")
     include("categorical.jl")
     include("binomial.jl")
+    include("exponential.jl")
 
 end # module
