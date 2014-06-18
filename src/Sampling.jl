@@ -1,4 +1,5 @@
 module Sampling
+    using ArrayViews
 
     import Base: getindex, length, show, rand, rand!
 
