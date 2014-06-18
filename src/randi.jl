@@ -19,6 +19,3 @@ end
 randi(K::Int) = rand(RandIntSampler(K))
 randi(a::Int, b::Int) = rand(RandIntSampler(a, b))
 
-# draw a number from a binomial distribution
-
-
