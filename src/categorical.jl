@@ -17,8 +17,8 @@ function make_alias_table!(a::AbstractVector{Float64})
         @inbounds a[i] *= n
     end
     alias = Array(Int,n)
-    larges = Array(Int,0)
-    smalls = Array(Int,0)
+    larges = Int[]
+    smalls = Int[]
 
     for i = 1:n
         acci = a[i] 
@@ -32,8 +32,8 @@ function make_alias_table!(a::AbstractVector{Float64})
     while !isempty(larges) && !isempty(smalls)
         s = pop!(smalls)
         l = pop!(larges)
-        alias[s] = l
-        a[l] = (a[l] - 1.0) + a[s]
+        @inbounds alias[s] = l
+        @inbounds a[l] = (a[l] - 1.0) + a[s]
         if a[l] > 1
             push!(larges,l)
         else
@@ -43,7 +43,7 @@ function make_alias_table!(a::AbstractVector{Float64})
 
     # this loop should be redundant, except for rounding
     for s in smalls
-        a[s] = 1.0
+        @inbounds a[s] = 1.0
     end
     AliasTable(a, alias, RandIntSampler(n))
 end
@@ -58,11 +58,8 @@ function AliasTable{T<:Real}(probs::AbstractVector{T})
     make_alias_table!(a)
 end
 
-function rand(s::AliasTable)
-    i = rand(s.isampler)
-    u = rand()
-    u < s.accept[i] ? i : s.alias[i]
-end
+rand(s::AliasTable) = 
+    (i = rand(s.isampler); u = rand(); @inbounds u < s.accept[i] ? i : s.alias[i])
 
 show(io::IO, s::AliasTable) = @printf(io, "AliasTable with %d entries", numcategories(s))
 

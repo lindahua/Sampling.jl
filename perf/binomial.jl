@@ -31,3 +31,8 @@ for n in 2.^(1:12), p in [0.3, 0.5, 0.9]
     bench_binomial_sampler(BinomialRmathSampler(n, p), (n, p), 10^5)
 end
 println()
+
+for n in 2.^(1:12), p in [0.3, 0.5, 0.9]
+    bench_binomial_sampler(BinomialAliasSampler(n, p), (n, p), 10^5)
+end
+println()
