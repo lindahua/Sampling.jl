@@ -1,5 +1,11 @@
-using Sampling
-using Base.Test
 
-# write your own tests here
-@test 1 == 1
+tests = ["categorical"]
+
+println("Run tests for Sampling:")
+
+for t in tests
+    tfile = string(t, ".jl")
+    println(" * $(tfile) ...")
+    include(tfile)
+end
+
