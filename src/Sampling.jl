@@ -23,12 +23,14 @@ module Sampling
     BinomialGeomSampler, BinomialTPESampler, BinomialPolySampler,
     BinomialAliasSampler,
 
+    # poisson
+    PoissonCountSampler, PoissonADSampler,
+
     # exponential
     ExponentialSampler, randexp,
 
     # gamma
     GammaMTSampler
-
 
     # source files
     include("samplebase.jl")
@@ -37,5 +39,6 @@ module Sampling
     include("binomial.jl")
     include("exponential.jl")
     include("gamma.jl")
+    include("poisson.jl")
 
 end # module

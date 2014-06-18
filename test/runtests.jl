@@ -1,5 +1,9 @@
 
-tests = ["categorical", "binomial"]
+tests = ["categorical", 
+		 "binomial", 
+		 "poisson", 
+		 "exponential", 
+		 "gamma"]
 
 println("Run tests for Sampling:")
 
