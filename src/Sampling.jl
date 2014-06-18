@@ -24,7 +24,10 @@ module Sampling
     BinomialAliasSampler,
 
     # exponential
-    ExponentialSampler, randexp
+    ExponentialSampler, randexp,
+
+    # gamma
+    GammaMTSampler
 
 
     # source files
@@ -33,5 +36,6 @@ module Sampling
     include("categorical.jl")
     include("binomial.jl")
     include("exponential.jl")
+    include("gamma.jl")
 
 end # module
