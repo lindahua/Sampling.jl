@@ -1,5 +1,17 @@
 import Base.Math.@horner
 
+# BinomialRmathSampler is non-exported, which is mainly used
+# for benchmarking or testing purpose
+#
+immutable BinomialRmathSampler <: DiscreteUnivariateSampler
+    n::Int
+    prob::Float64
+end
+
+rand(s::BinomialRmathSampler) = 
+    int(ccall((:rbinom, "libRmath-julia"), Float64, (Float64, Float64), s.n, s.prob))
+
+
 # Remainder term after Stirling's approximation to the log-gamma function
 # lstirling(x) = lgamma(x) + x - (x-0.5)*log(x) - 0.5*log2π
 #              = 1/(12x) - 1/(360x^3) + 1/(1260x^5) + ...
