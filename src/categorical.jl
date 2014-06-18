@@ -1,6 +1,6 @@
 ##### Alias Table #####
 
-immutable AliasTable <: Sampler{Univariate,Discrete}
+immutable AliasTable <: DiscreteUnivariateSampler
     accept::Vector{Float64}
     alias::Vector{Int}
     isampler::RandIntSampler

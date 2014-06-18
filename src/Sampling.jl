@@ -17,12 +17,15 @@ module Sampling
     RandIntSampler, randi,
 
     # categorical
-    AliasTable, numcategories
+    AliasTable, numcategories,
 
+    # binomial
+    BinomialGeomSampler, BinomialTPESampler, BinomialPolySampler
 
     # source files
     include("samplebase.jl")
     include("randi.jl")
     include("categorical.jl")
+    include("binomial.jl")
 
 end # module
