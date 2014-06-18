@@ -20,7 +20,8 @@ module Sampling
     AliasTable, numcategories,
 
     # binomial
-    BinomialGeomSampler, BinomialTPESampler, BinomialPolySampler
+    BinomialGeomSampler, BinomialTPESampler, BinomialPolySampler,
+    BinomialAliasSampler
 
     # source files
     include("samplebase.jl")

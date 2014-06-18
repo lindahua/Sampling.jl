@@ -12,6 +12,27 @@ rand(s::BinomialRmathSampler) =
     int(ccall((:rbinom, "libRmath-julia"), Float64, (Float64, Float64), s.n, s.prob))
 
 
+# compute probability vector of a Binomial distribution
+function binompvec(n::Int, p::Float64)
+    pv = Array(Float64, n+1)
+    if p == 0.0
+        fill!(pv, 0.0)
+        pv[1] = 1.0
+    elseif p == 1.0
+        fill!(pv, 0.0)
+        pv[n+1] = 1.0
+    else
+        q = 1.0 - p
+        a = p / q
+        @inbounds pv[1] = pk = q ^ n
+        for k = 1:n
+            @inbounds pv[k+1] = (pk *= ((n - k + 1) / k) * a)
+        end
+    end
+    return pv
+end
+
+
 # Remainder term after Stirling's approximation to the log-gamma function
 # lstirling(x) = lgamma(x) + x - (x-0.5)*log(x) - 0.5*log2π
 #              = 1/(12x) - 1/(360x^3) + 1/(1260x^5) + ...
@@ -253,6 +274,18 @@ function rand(s::BinomialTPESampler)
     # 6
     (s.comp ? s.n - y : y)::Int
 end
+
+
+# Constructing an alias table by directly computing the probability vector
+#
+immutable BinomialAliasSampler <: DiscreteUnivariateSampler
+    table::AliasTable
+end
+
+BinomialAliasSampler(n::Int, p::Float64) = 
+    BinomialAliasSampler(make_alias_table!(binompvec(n, p)))
+
+rand(s::BinomialAliasSampler) = rand(s.table) - 1
 
 
 # Integrated Polyalgorithm sampler that automatically chooses the proper one

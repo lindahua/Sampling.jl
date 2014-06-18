@@ -1,19 +1,6 @@
 using Sampling
 using Base.Test
 
-function binompvec(n::Int, p::Float64)
-    # probability vector of binomial 
-
-    q = 1.0 - p
-    pv = zeros(n + 1)
-    pv[1] = q ^ n
-    a = p / q
-    for k = 1:n
-        pv[k+1] = pv[k] * ((n - k + 1) / k) * a
-    end
-    return pv
-end
-
 function test_binomsampler(s, params::(Int, Float64), ns::Int, tol::Float64)
     # s: the sampler to be tested
     # params: the binomial parameters, in the form of (n, p)
@@ -36,7 +23,7 @@ function test_binomsampler(s, params::(Int, Float64), ns::Int, tol::Float64)
             @assert 0 <= x <= n
             cnts[x+1] += 1
         end
-        pv = binompvec(n, p)
+        pv = Sampling.binompvec(n, p)
         pr = cnts ./ ns
         @test_approx_eq_eps pr pv tol
     end
@@ -58,3 +45,8 @@ for params in [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0),
     test_binomsampler(BinomialPolySampler(params...), params, 10^6, 0.015)
 end
 
+for params in [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0), 
+               (1, 0.2), (1, 0.8), (3, 0.4), (4, 0.6), 
+               (40, 0.5), (100, 0.4), (300, 0.6)]
+    test_binomsampler(BinomialAliasSampler(params...), params, 10^6, 0.015)
+end

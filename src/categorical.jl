@@ -7,32 +7,34 @@ immutable AliasTable <: DiscreteUnivariateSampler
 end
 numcategories(s::AliasTable) = length(s.accept)
 
-function AliasTable{T<:Real}(probs::AbstractVector{T})
-    n = length(probs)
-    n > 0 || error("The input probability vector is empty.")
-
-    accept = Array(Float64, n)
+function make_alias_table!(a::AbstractVector{Float64})
+    # input probabilities via a, which is then
+    # overriden by acceptance probabilities
+    # and used internally by the AliasTable instance
+    #
+    n = length(a)
     for i=1:n
-        @inbounds accept[i] = probs[i] * n
+        @inbounds a[i] *= n
     end
     alias = Array(Int,n)
     larges = Array(Int,0)
     smalls = Array(Int,0)
 
     for i = 1:n
-        acci = accept[i] 
+        acci = a[i] 
         if acci > 1.0 
             push!(larges,i)
         elseif acci < 1.0
             push!(smalls,i)
         end
     end
+
     while !isempty(larges) && !isempty(smalls)
         s = pop!(smalls)
         l = pop!(larges)
         alias[s] = l
-        accept[l] = (accept[l] - 1.0) + accept[s]
-        if accept[l] > 1
+        a[l] = (a[l] - 1.0) + a[s]
+        if a[l] > 1
             push!(larges,l)
         else
             push!(smalls,l)
@@ -41,10 +43,19 @@ function AliasTable{T<:Real}(probs::AbstractVector{T})
 
     # this loop should be redundant, except for rounding
     for s in smalls
-        accept[s] = 1.0
+        a[s] = 1.0
     end
+    AliasTable(a, alias, RandIntSampler(n))
+end
 
-    AliasTable(accept, alias, RandIntSampler(n))
+function AliasTable{T<:Real}(probs::AbstractVector{T})
+    n = length(probs)
+    n > 0 || error("The input probability vector is empty.")
+    a = Array(Float64, n)
+    for i = 1:n
+        @inbounds a[i] = probs[i]
+    end
+    make_alias_table!(a)
 end
 
 function rand(s::AliasTable)
