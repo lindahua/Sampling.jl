@@ -8,7 +8,7 @@ module Sampling
     # samplebase
     VariateForm, Univariate, Multivariate, Matrixvariate,
     ValueSupport, Discrete, Continuous,
-    Sampleable,
+    Sampleable, sampledim,
 
     # randi
     RandIntSampler, randi,
