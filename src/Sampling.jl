@@ -1,9 +1,10 @@
 module Sampling
     using ArrayViews
+    using Compat
 
     import Base: getindex, length, show, rand, rand!
 
-    export 
+    export
 
     # samplebase
     VariateForm, Univariate, Multivariate, Matrixvariate,

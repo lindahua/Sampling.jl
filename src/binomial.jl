@@ -8,7 +8,7 @@ immutable BinomialRmathSampler <: Sampleable{Univariate,Discrete}
     prob::Float64
 end
 
-rand(s::BinomialRmathSampler) = 
+rand(s::BinomialRmathSampler) =
     int(ccall((:rbinom, "libRmath-julia"), Float64, (Float64, Float64), s.n, s.prob))
 
 
@@ -74,8 +74,8 @@ end
 
 # Geometric method:
 #
-#   Devroye. L. 
-#   "Generating the maximum of independent identically  distributed random variables" 
+#   Devroye. L.
+#   "Generating the maximum of independent identically  distributed random variables"
 #   Computers and Marhemafics with Applicalions 6, 1960, 305-315.
 #
 immutable BinomialGeomSampler <: Sampleable{Univariate,Discrete}
@@ -102,10 +102,10 @@ function rand(s::BinomialGeomSampler)
     x = 0
     n = s.n
     while true
-        er = Base.Random.randmtzig_exprnd()
+        er = randexp()
         v = er * s.scale
         if v > n  # in case when v is very large or infinity
-            break 
+            break
         end
         y += iceil(v)
         if y > n
@@ -119,9 +119,9 @@ end
 
 # BTPE algorithm from:
 #
-#   Kachitvichyanukul, V.; Schmeiser, B. W. 
-#   "Binomial random variate generation." 
-#   Comm. ACM 31 (1988), no. 2, 216–222. 
+#   Kachitvichyanukul, V.; Schmeiser, B. W.
+#   "Binomial random variate generation."
+#   Comm. ACM 31 (1988), no. 2, 216–222.
 #
 # Note: only use this sampler when n * min(p, 1-p) is large enough
 #       e.g., it is greater than 20.
@@ -146,8 +146,8 @@ immutable BinomialTPESampler <: Sampleable{Univariate,Discrete}
     λR::Float64
 end
 
-BinomialTPESampler() = 
-    BinomialTPESampler(false, 0, 0., 0., 0., 0., 0, 
+BinomialTPESampler() =
+    BinomialTPESampler(false, 0, 0., 0., 0., 0., 0,
                        0., 0., 0., 0., 0., 0., 0., 0., 0., 0.)
 
 function BinomialTPESampler(n::Int, prob::Float64)
@@ -177,7 +177,7 @@ function BinomialTPESampler(n::Int, prob::Float64)
     p2 = p1*(1.0 + 2.0*c)
     p3 = p2 + c/λL
     p4 = p3 + c/λR
-    
+
     BinomialTPESampler(comp,n,r,q,nrq,M,Mi,p1,p2,p3,p4,
                         xM,xL,xR,c,λL,λR)
 end
@@ -218,7 +218,7 @@ function rand(s::BinomialTPESampler)
             v *= (u-s.p3)*s.λR
             # Goto 5
         end
-        
+
         # Step 5
         # 5.0
         k = abs(y-s.Mi)
@@ -254,7 +254,7 @@ function rand(s::BinomialTPESampler)
                 # Goto 1
                 continue
             end
-            
+
             # 5.3
             x1 = float64(y+1)
             f1 = float64(s.Mi+1)
@@ -265,8 +265,8 @@ function rand(s::BinomialTPESampler)
                     lstirling_asym(f1) + lstirling_asym(z) + lstirling_asym(x1) + lstirling_asym(w))
                 # Goto 1
                 continue
-            end                
-            
+            end
+
             # Goto 6
             break
         end
@@ -282,7 +282,7 @@ immutable BinomialAliasSampler <: Sampleable{Univariate,Discrete}
     table::AliasTable
 end
 
-BinomialAliasSampler(n::Int, p::Float64) = 
+BinomialAliasSampler(n::Int, p::Float64) =
     BinomialAliasSampler(make_alias_table!(binompvec(n, p)))
 
 rand(s::BinomialAliasSampler) = rand(s.table) - 1
@@ -293,7 +293,7 @@ rand(s::BinomialAliasSampler) = rand(s.table) - 1
 # It is important for type-stability
 #
 type BinomialPolySampler <: Sampleable{Univariate,Discrete}
-    use_btpe::Bool 
+    use_btpe::Bool
     geom_sampler::BinomialGeomSampler
     btpe_sampler::BinomialTPESampler
 end
